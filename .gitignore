@@ -2,3 +2,5 @@ build
 composer.lock
 docs
 vendor
+index.php
+.DS_Store
