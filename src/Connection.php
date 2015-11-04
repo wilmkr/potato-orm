@@ -8,7 +8,7 @@ use Dotenv\Dotenv;
 
 class Connection
 {
-  public static function getConnection()
+  public static function connect()
   {
     try
     {
