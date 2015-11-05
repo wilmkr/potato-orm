@@ -2,8 +2,9 @@
 
 namespace Wilson\Source;
 
-use Wilson\Source\Connection;
+use PDO;
 use Exception;
+use Wilson\Source\Connection;
 
 abstract class Base
 {
@@ -16,12 +17,13 @@ abstract class Base
 
     public static function getTableName()
     {
-        if(array_key_exists("table", self::$fields)){
-            return self::$fields["table"];
-        }
-        else {
-           throw new Exception("Table property unspecified in class instance.");
-        }
+        // if(array_key_exists("table", self::$fields)){
+        //     return self::$fields["table"];
+        // }
+        // else {
+        //    throw new Exception("Table property unspecified in class instance.");
+        // }
+        return "users";
     }
 
     public function __set($property, $value)
@@ -42,24 +44,37 @@ abstract class Base
 
     public static function getAll()
     {
-        //SELECT * FROM table
-        // $tableName = self::$fields["table"];
-        // echo "Table: ".$tableName."<br />";
+        try {
+            $tableName = self::getTableName();
+            $conn = self::getConnection();
+
+            $stmt = $conn->query('SELECT * FROM '.$tableName);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch(PDOException $e) {
+            return $e->getMessage();
+        }
+        catch(Exception $e2) {
+            return $e2->getMessage();
+        }
     }
 
     public static function save()
     {
-        $tableName = self::getTableName();
         $tableColumns = implode(", ", array_keys(self::$fields));
         $columnValues = "'".implode("',' ", array_values(self::$fields))."'";
 
         try{
+            $tableName = self::getTableName();
             $conn = self::getConnection();
             $sql = "INSERT INTO ".$tableName."($tableColumns) VALUES($columnValues)";
             $affectedRows = $conn->exec($sql);
         }
         catch(PDOException $e){
             echo $e->getMessage();
+        }
+        catch(Exception $e2) {
+            echo $e2->getMessage();
         }
     }
 
