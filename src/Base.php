@@ -3,14 +3,35 @@
 namespace Wilson\Source;
 
 use Wilson\Source\Connection;
+use Exception;
 
 abstract class Base
 {
-    public $var = "foo";
+    public static $fields = [];
 
     public static function getConnection()
     {
         return Connection::connect();
+    }
+
+    public static function getTableName()
+    {
+        if(array_key_exists("table", self::$fields)){
+            return self::$fields["table"];
+        }
+        else {
+           throw new Exception("Table property unspecified in class instance.");
+        }
+    }
+
+    public function __set($property, $value)
+    {
+        self::$fields[$property] = $value;
+    }
+
+    public function __get($property)
+    {
+        return self::$fields[$property];
     }
 
     public static function find($position)
@@ -22,15 +43,24 @@ abstract class Base
     public static function getAll()
     {
         //SELECT * FROM table
+        // $tableName = self::$fields["table"];
+        // echo "Table: ".$tableName."<br />";
     }
 
     public static function save()
     {
-        $conn = self::getConnection();
+        $tableName = self::getTableName();
+        $tableColumns = implode(", ", array_keys(self::$fields));
+        $columnValues = "'".implode("',' ", array_values(self::$fields))."'";
 
-        $stmt = $conn->prepare("INSERT INTO table(field1,field2,field3,field4,field5) VALUES(:field1,:field2,:field3,:field4,:field5)");
-        $stmt->execute(array(':field1' => $field1, ':field2' => $field2, ':field3' => $field3, ':field4' => $field4, ':field5' => $field5));
-        $affected_rows = $stmt->rowCount();
+        try{
+            $conn = self::getConnection();
+            $sql = "INSERT INTO ".$tableName."($tableColumns) VALUES($columnValues)";
+            $affectedRows = $conn->exec($sql);
+        }
+        catch(PDOException $e){
+            echo $e->getMessage();
+        }
     }
 
     public static function destroy($position)
