@@ -9,6 +9,7 @@ use Wilson\Source\Connection;
 abstract class Base
 {
     public static $fields = [];
+    public static $id;
 
     public static function getConnection()
     {
@@ -38,14 +39,42 @@ abstract class Base
 
     public static function find($position)
     {
-        $offset = $position - 1;
-        //SELECT * FROM table LIMIT $offset, 1
+        try {
+            $offset = $position - 1;
+            $object = new static;
+            $tableName = self::getTableName();
+            $conn = self::getConnection();
+
+            $stmt = $conn->query('SELECT * FROM '.$tableName.' LIMIT '.$offset.', 1');
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $object->id = $result['id'];
+            return $object;
+
+            // echo '>>>>>>>>><br />';
+            // echo 'id before '.self::$id.'<br />';
+            // $record = $stmt->fetchObject();
+            // self::$id = $record->id;
+            // echo 'id after '.s elf::$id.'<br />';
+        }
+        catch(PDOException $e) {
+            return $e->getMessage();
+        }
+        catch(Exception $e2) {
+            return $e2->getMessage();
+        }
+    }
+
+    public static function test(){
+        echo 'test() ';
+        var_dump(self::$fields);
     }
 
     public static function getAll()
     {
         try {
             $tableName = self::getTableName();
+
             $conn = self::getConnection();
 
             $stmt = $conn->query('SELECT * FROM '.$tableName);
@@ -67,8 +96,16 @@ abstract class Base
         try{
             $tableName = self::getTableName();
             $conn = self::getConnection();
-            $sql = "INSERT INTO ".$tableName."($tableColumns) VALUES($columnValues)";
-            $affectedRows = $conn->exec($sql);
+
+            if(array_key_exists("id", self::$fields)){
+                //update existing record
+                //UPDATE table SET
+            }
+            else {
+                //insert a new record
+                $sql = "INSERT INTO ".$tableName."($tableColumns) VALUES($columnValues)";
+                $affectedRows = $conn->exec($sql);
+            }
         }
         catch(PDOException $e){
             echo $e->getMessage();
