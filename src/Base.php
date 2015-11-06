@@ -133,7 +133,22 @@ abstract class Base
 
     public static function destroy($position)
     {
-        $offset = $position - 1;
-        //DELETE fFROM table WHERE field = $id
+        $record = self::find($position);
+        $id = $record->id;
+        echo 'Delete  id '.$id.'<br />';
+
+        try {
+            $tableName = self::getTableName();
+            $conn = self::getConnection();
+            $sql = "DELETE FROM ".$tableName ." WHERE id = ".$id;
+            $affectedRows = $conn->exec($sql);
+            return $affectedRows;
+        }
+        catch(PDOException $e) {
+            return $e->getMessage();
+        }
+        catch(Exception $e2) {
+            return $e2->getMessage();
+        }
     }
 }
