@@ -9,7 +9,16 @@ use Wilson\Source\Connection;
 abstract class Base
 {
     public static $fields = [];
-    public static $id;
+
+    public function __set($property, $value)
+    {
+        self::$fields[$property] = $value;
+    }
+
+    public function __get($property)
+    {
+        return self::$fields[$property];
+    }
 
     public static function getConnection()
     {
@@ -27,35 +36,22 @@ abstract class Base
         return "users";
     }
 
-    public function __set($property, $value)
-    {
-        self::$fields[$property] = $value;
-    }
-
-    public function __get($property)
-    {
-        return self::$fields[$property];
-    }
-
     public static function find($position)
     {
         try {
             $offset = $position - 1;
-            $object = new static;
             $tableName = self::getTableName();
             $conn = self::getConnection();
 
             $stmt = $conn->query('SELECT * FROM '.$tableName.' LIMIT '.$offset.', 1');
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            $object = new static;
             $object->id = $result['id'];
             return $object;
 
-            // echo '>>>>>>>>><br />';
-            // echo 'id before '.self::$id.'<br />';
             // $record = $stmt->fetchObject();
             // self::$id = $record->id;
-            // echo 'id after '.s elf::$id.'<br />';
         }
         catch(PDOException $e) {
             return $e->getMessage();
@@ -65,16 +61,10 @@ abstract class Base
         }
     }
 
-    public static function test(){
-        echo 'test() ';
-        var_dump(self::$fields);
-    }
-
     public static function getAll()
     {
         try {
             $tableName = self::getTableName();
-
             $conn = self::getConnection();
 
             $stmt = $conn->query('SELECT * FROM '.$tableName);
@@ -90,29 +80,55 @@ abstract class Base
 
     public static function save()
     {
-        $tableColumns = implode(", ", array_keys(self::$fields));
-        $columnValues = "'".implode("',' ", array_values(self::$fields))."'";
-
-        try{
+        try {
             $tableName = self::getTableName();
+            $affectedRows = 0;
             $conn = self::getConnection();
 
             if(array_key_exists("id", self::$fields)){
-                //update existing record
-                //UPDATE table SET
+                //update an existing record
+                $sql = self::makeUpdateSQL();
             }
             else {
                 //insert a new record
+                $tableColumns = implode(", ", array_keys(self::$fields));
+                $columnValues = "'".implode("',' ", array_values(self::$fields))."'";
                 $sql = "INSERT INTO ".$tableName."($tableColumns) VALUES($columnValues)";
-                $affectedRows = $conn->exec($sql);
             }
+
+            $affectedRows = $conn->exec($sql);
+            return $affectedRows;
         }
-        catch(PDOException $e){
-            echo $e->getMessage();
+        catch(PDOException $e) {
+            return $e->getMessage();
         }
         catch(Exception $e2) {
-            echo $e2->getMessage();
+            return $e2->getMessage();
         }
+    }
+
+    public static function makeUpdateSQL()
+    {
+        $tableName = self::getTableName();
+        $setClause = "";
+        $whereClause = "";
+        $keysCount = count(self::$fields);
+        $iterations = 1;
+        foreach(self::$fields as $key => $val)
+        {
+            if($key == "id") {
+                $whereClause = " WHERE id = ".$val;
+            }
+            else {
+                $setClause = $setClause.$key." = '".$val."'";
+                if($keysCount > 2 && $iterations < $keysCount) {
+                    $setClause = $setClause.", ";
+                }
+            }
+            $iterations++;
+        }
+        $sql = "UPDATE ".$tableName." SET ".$setClause.$whereClause;
+        return $sql;
     }
 
     public static function destroy($position)
