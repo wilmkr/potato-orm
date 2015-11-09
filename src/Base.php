@@ -27,13 +27,8 @@ abstract class Base
 
     public static function getTableName()
     {
-        // if(array_key_exists("table", self::$fields)){
-        //     return self::$fields["table"];
-        // }
-        // else {
-        //    throw new Exception("Table property unspecified in class instance.");
-        // }
-        return "users";
+        return strtolower(substr(strrchr(get_called_class(), '\\'), 1)).'s';
+        //return "users";
     }
 
     public static function find($position)
@@ -48,10 +43,8 @@ abstract class Base
 
             $object = new static;
             $object->id = $result['id'];
-            return $object;
 
-            // $record = $stmt->fetchObject();
-            // self::$id = $record->id;
+            return $object;
         }
         catch(PDOException $e) {
             return $e->getMessage();
@@ -68,6 +61,7 @@ abstract class Base
             $conn = self::getConnection();
 
             $stmt = $conn->query('SELECT * FROM '.$tableName);
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
         catch(PDOException $e) {
@@ -97,6 +91,7 @@ abstract class Base
             }
 
             $affectedRows = $conn->exec($sql);
+
             return $affectedRows;
         }
         catch(PDOException $e) {
@@ -128,6 +123,7 @@ abstract class Base
             $iterations++;
         }
         $sql = "UPDATE ".$tableName." SET ".$setClause.$whereClause;
+
         return $sql;
     }
 
@@ -135,13 +131,13 @@ abstract class Base
     {
         $record = self::find($position);
         $id = $record->id;
-        echo 'Delete  id '.$id.'<br />';
 
         try {
             $tableName = self::getTableName();
             $conn = self::getConnection();
             $sql = "DELETE FROM ".$tableName ." WHERE id = ".$id;
             $affectedRows = $conn->exec($sql);
+
             return $affectedRows;
         }
         catch(PDOException $e) {
