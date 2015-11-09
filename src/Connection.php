@@ -8,6 +8,9 @@ use Dotenv\Dotenv;
 
 class Connection
 {
+  /**
+   * Creates a connection to the database
+   */
   public static function connect()
   {
     try

@@ -20,17 +20,27 @@ abstract class Base
         return self::$fields[$property];
     }
 
+    /**
+     * Return a database connection
+     */
     public static function getConnection()
     {
         return Connection::connect();
     }
 
+    /**
+     * Generate the database table name based on the entity name
+     */
     public static function getTableName()
     {
-        return strtolower(substr(strrchr(get_called_class(), '\\'), 1)).'s';
-        //return "users";
+        $table = substr(strrchr(get_called_class(), '\\'), 1);
+        return strtolower($table).'s';
     }
 
+    /**
+     * Finds a record in the database table in the position dennoted by the parameter passed
+     * @param  integer $position
+     */
     public static function find($position)
     {
         try {
@@ -54,6 +64,9 @@ abstract class Base
         }
     }
 
+    /**
+     * Fetches all records in the database table and returns them in an array
+     */
     public static function getAll()
     {
         try {
@@ -72,6 +85,9 @@ abstract class Base
         }
     }
 
+    /**
+     * inserts a new record into the database table or updates an already existing record
+     */
     public static function save()
     {
         try {
@@ -102,6 +118,9 @@ abstract class Base
         }
     }
 
+    /**
+     * Generates the SQL statement used to update a record in the database
+     */
     public static function makeUpdateSQL()
     {
         $tableName = self::getTableName();
@@ -127,6 +146,10 @@ abstract class Base
         return $sql;
     }
 
+    /**
+     *  Deletes a record from the table at the position denoted by the parameter passed in
+     * @param  integer $position
+     */
     public static function destroy($position)
     {
         $record = self::find($position);
