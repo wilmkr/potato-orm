@@ -3,5 +3,4 @@ composer.lock
 docs
 vendor
 index.php
-.env
 .DS_Store
