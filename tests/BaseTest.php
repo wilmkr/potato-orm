@@ -9,12 +9,6 @@ use Wilson\Source\Examples\User;
 
 class BaseTest extends PHPUnit_Framework_TestCase
 {
-    // public function testGetConnection()
-    // {
-    //     // $conn = Mockery::mock('Wilson\Source\Connection');
-    //     // $conn->shouldReceive('connect')->once()->andReturn();
-    // }
-
     public function testGetTableName()
     {
         $table = User::getTableName();
@@ -27,11 +21,6 @@ class BaseTest extends PHPUnit_Framework_TestCase
         $mock = Mockery::mock('Wilson\Source\Base');
         $mock->shouldReceive('find')->with(1)->andReturn(new static);
     }
-
-    // public function test getAll()
-    // {
-
-    // }
 
     public function testSave()
     {

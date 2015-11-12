@@ -36,17 +36,7 @@ abstract class Base
         $table = substr(strrchr(get_called_class(), '\\'), 1);
         $table = strtolower($table).'s';
 
-        try {
-            $conn = self::getConnection();
-
-            $stmt = $conn->query('SELECT 1 FROM '.$table);
-            $result = $stmt->rowCount();
-
-            return $table;
-        }
-        catch(Exception $e) {
-            return $e->getMessage();
-        }
+        return $table;
     }
 
     /**
