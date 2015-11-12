@@ -1,6 +1,6 @@
 # Potato-orm
 
-[![Build Status][ico-travis]](https://travis-ci.org/andela-womokoro/potato-orm.svg)](https://travis-ci.org/andela-womokoro/potato-orm)
+[![Build Status](https://travis-ci.org/andela-womokoro/potato-orm.svg)](https://travis-ci.org/andela-womokoro/potato-orm)
 
 
 A simple ORM to insert, read, update, and delete data from a database written in PHP.
