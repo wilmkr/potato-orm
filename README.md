@@ -8,7 +8,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 
-A simple ORM to insert, read, update, and delete data from a database written.
+A simple ORM to insert, read, update, and delete data from a database written in PHP.
 
 ## Install
 
