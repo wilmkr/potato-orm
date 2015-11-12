@@ -21,7 +21,7 @@ abstract class Base
     }
 
     /**
-     * Return a database connection
+     * This method return a database connection
      */
     public static function getConnection()
     {
@@ -29,16 +29,28 @@ abstract class Base
     }
 
     /**
-     * Generate the database table name based on the entity name
+     * This method generate the database table name based on the entity name
      */
     public static function getTableName()
     {
         $table = substr(strrchr(get_called_class(), '\\'), 1);
-        return strtolower($table).'s';
+        $table = strtolower($table).'s';
+
+        try {
+            $conn = self::getConnection();
+
+            $stmt = $conn->query('SELECT 1 FROM '.$table);
+            $result = $stmt->rowCount();
+
+            return $table;
+        }
+        catch(Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
-     * Finds a record in the database table in the position dennoted by the parameter passed
+     * Finds a record in the database table in the position denoted by the parameter passed
      * @param  integer $position
      */
     public static function find($position)
@@ -50,6 +62,10 @@ abstract class Base
 
             $stmt = $conn->query('SELECT * FROM '.$tableName.' LIMIT '.$offset.', 1');
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if(!$result) {
+                throw new Exception(" No record exists at position $position in the $tableName table.");
+            }
 
             $object = new static;
             $object->id = $result['id'];
@@ -65,7 +81,7 @@ abstract class Base
     }
 
     /**
-     * Fetches all records in the database table and returns them in an array
+     * This method fetches all the records in the database table and returns them in an array
      */
     public static function getAll()
     {
@@ -86,7 +102,7 @@ abstract class Base
     }
 
     /**
-     * inserts a new record into the database table or updates an already existing record
+     * This method inserts a new record into the database table or updates an already existing record
      */
     public static function save()
     {
@@ -119,7 +135,7 @@ abstract class Base
     }
 
     /**
-     * Generates the SQL statement used to update a record in the database
+     * This method generates the SQL statement used to update a record in the database
      */
     public static function makeUpdateSQL()
     {
@@ -128,6 +144,7 @@ abstract class Base
         $whereClause = "";
         $keysCount = count(self::$fields);
         $iterations = 1;
+
         foreach(self::$fields as $key => $val)
         {
             if($key == "id") {
@@ -135,19 +152,21 @@ abstract class Base
             }
             else {
                 $setClause = $setClause.$key." = '".$val."'";
+
                 if($keysCount > 2 && $iterations < $keysCount) {
                     $setClause = $setClause.", ";
                 }
             }
             $iterations++;
         }
+
         $sql = "UPDATE ".$tableName." SET ".$setClause.$whereClause;
 
         return $sql;
     }
 
     /**
-     *  Deletes a record from the table at the position denoted by the parameter passed in
+     * This method deletes a record from the database table at the position denoted by the parameter passed in
      * @param  integer $position
      */
     public static function destroy($position)
