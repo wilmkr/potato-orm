@@ -8,7 +8,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 
-A simple ORM to insert, read, update, and delete data from a database.
+A simple ORM to insert, read, update, and delete data from a database written.
 
 ## Install
 
@@ -20,7 +20,18 @@ $ composer require Wilson/potato-orm
 
 ## Usage
 
-- Insert a record into the database table, e.g. users table
+- Simply extend the base class. The base class is an abstract class called "Base". So for example if you have a users table in the database and you wish to perform create, read, update, and delete (CRUD) operations on the table, create a corresponding class like this
+
+```
+use Wilson\Source\Base;
+
+class User extends Base
+{
+
+}
+```
+
+- Insert a record into the table
 
 ```
 $person = new User();
@@ -30,14 +41,14 @@ $person->password = "12345";
 $person->save();
 ```
 
-- Read all records from the database table
+- Read all records from the table
 
 ```
 $users = User::getAll();
 print_r($users);
 ```
 
-- Update a record in the database table. For example update the password of the fifth record in the users table:
+- Update a record in the table. For example update the password of the fifth record in the users table:
 
 ```
 $user = User::find(5);
@@ -45,7 +56,7 @@ $user->password = "lkHJu9Z";
 $user->save();
 ```
 
-- Delete a record from the database table. For example delete the third record in the users table:
+- Delete a record from the table. For example delete the third record in the users table:
 
 ```
 $user = User::destroy(3);
@@ -69,7 +80,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 
 ## Security
 
-If you discover any security related issues, please email :author_email instead of using the issue tracker.
+If you discover any security related issues, please email wilson.omokoro@andela.com instead of using the issue tracker.
 
 ## Credits
 
