@@ -18,13 +18,13 @@ class BaseTest extends PHPUnit_Framework_TestCase
 
     public function testFind()
     {
-        $mock = Mockery::mock('Wilson\Source\Base');
+        $mock = Mockery::mock('Wilson\Source\Examples\User');
         $mock->shouldReceive('find')->with(1)->andReturn(new static);
     }
 
     public function testSave()
     {
-        $mock = Mockery::mock('Wilson\Source\Base');
+        $mock = Mockery::mock('Wilson\Source\Examples\User');
         $mock->shouldReceive('save')->once()->andReturn('1');
     }
 
@@ -42,7 +42,7 @@ class BaseTest extends PHPUnit_Framework_TestCase
 
     public function testDestroy()
     {
-        $mock = Mockery::mock('Wilson\Source\Base');
+        $mock = Mockery::mock('Wilson\Source\Examples\User');
         $mock->shouldReceive('save')->once()->with('1')->andReturn('1');
     }
 }
