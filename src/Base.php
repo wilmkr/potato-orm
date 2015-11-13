@@ -60,9 +60,6 @@ abstract class Base
             $object = new static;
             $object->id = $result['id'];
             $object->result = json_encode($result);
-            // $object->name = $result['name'];
-            // $object->email = $result['email'];
-            // $object->password = $result['password'];
 
             return $object;
         }
