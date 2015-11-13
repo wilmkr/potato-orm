@@ -3,7 +3,9 @@
 namespace Wilson\tests;
 
 use Mockery;
+use stdClass;
 use Wilson\Source\Base;
+use Wilson\Source\Stubs\Car;
 use Wilson\Source\Stubs\User;
 use PHPUnit_Framework_TestCase;
 
@@ -36,10 +38,11 @@ class BaseTest extends PHPUnit_Framework_TestCase
      */
     public function testFind()
     {
-        $object = new User();
+        $object = Mockery::mock('Wilson\Source\Stubs\User');
+
         $object->id = 1;
         $object->result = [
-            "id" => "1",
+            "id" => 1,
             "name" => "Don Simon",
             "email" => "don.simon@yahoo.com",
             "password" => "12345"
@@ -47,7 +50,7 @@ class BaseTest extends PHPUnit_Framework_TestCase
 
         $this->userMock->shouldReceive('find')->with(1)->andReturn($object);
 
-        $this->assertEquals($object, User::find(1));
+        $this->assertEquals($object, $this->userMock->find(1));
     }
 
     /**
