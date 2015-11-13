@@ -59,6 +59,10 @@ abstract class Base
 
             $object = new static;
             $object->id = $result['id'];
+            $object->result = json_encode($result);
+            // $object->name = $result['name'];
+            // $object->email = $result['email'];
+            // $object->password = $result['password'];
 
             return $object;
         }
@@ -140,7 +144,7 @@ abstract class Base
             if($key == "id") {
                 $whereClause = " WHERE id = ".$val;
             }
-            else {
+            else if($key != "result") {
                 $setClause = $setClause.$key." = '".$val."'";
 
                 if($keysCount > 2 && $iterations < $keysCount) {
@@ -151,6 +155,8 @@ abstract class Base
         }
 
         $sql = "UPDATE ".$tableName." SET ".$setClause.$whereClause;
+
+        var_dump($sql);
 
         return $sql;
     }

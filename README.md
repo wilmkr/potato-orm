@@ -36,6 +36,13 @@ $person->password = "12345";
 $person->save();
 ```
 
+- Find a particular record in the table
+
+```
+$user = User::find(3);
+echo $user->result;
+```
+
 - Read all records from the table
 
 ```
