@@ -153,8 +153,6 @@ abstract class Base
 
         $sql = "UPDATE ".$tableName." SET ".$setClause.$whereClause;
 
-        var_dump($sql);
-
         return $sql;
     }
 

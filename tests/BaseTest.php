@@ -4,8 +4,8 @@ namespace Wilson\tests;
 
 use Mockery;
 use Wilson\Source\Base;
-use PHPUnit_Framework_TestCase;
 use Wilson\Source\Stubs\User;
+use PHPUnit_Framework_TestCase;
 
 class BaseTest extends PHPUnit_Framework_TestCase
 {
@@ -36,7 +36,18 @@ class BaseTest extends PHPUnit_Framework_TestCase
      */
     public function testFind()
     {
-        $this->userMock->shouldReceive('find')->with(1)->andReturn(new static);
+        $object = new User();
+        $object->id = 1;
+        $object->result = [
+            "id" => "1",
+            "name" => "Don Simon",
+            "email" => "don.simon@yahoo.com",
+            "password" => "12345"
+        ];
+
+        $this->userMock->shouldReceive('find')->with(1)->andReturn($object);
+
+        $this->assertEquals($object, User::find(1));
     }
 
     /**
@@ -44,7 +55,13 @@ class BaseTest extends PHPUnit_Framework_TestCase
      */
     public function testSave()
     {
-        $this->userMock->shouldReceive('save')->andReturn('1');
+        $this->userMock->name = "Wilson Omokoro";
+        $this->userMock->email = "baba@bbv.com";
+        $this->userMock->password = "12345";
+
+        $this->userMock->shouldReceive('save')->andReturn(1);
+
+        $this->assertEquals(1, $this->userMock->save());
     }
 
     /**
@@ -52,14 +69,14 @@ class BaseTest extends PHPUnit_Framework_TestCase
      */
     public function testMakeUpdateSQL()
     {
-        $user = new User();
-        $user->id = "1";
-        $user->name = "Nick Gray";
+        $query = "UPDATE users SET name = 'Nick Gray' WHERE id = 1";
 
-        $expected = "UPDATE users SET name = 'Nick Gray' WHERE id = 1";
-        $actual = $user->makeUpdateSQL();
+        $this->userMock->id = "1";
+        $this->userMock->name = "Nick Gray";
 
-        $this->assertEquals($expected, $actual);
+        $this->userMock->shouldReceive('makeUpdateSQL')->andReturn($query);
+
+        $this->assertEquals($query, $this->userMock->makeUpdateSQL());
     }
 
     /**
@@ -67,6 +84,10 @@ class BaseTest extends PHPUnit_Framework_TestCase
      */
     public function testDestroy()
     {
-        $this->userMock->shouldReceive('save')->with('1')->andReturn('1');
+        $this->userMock->id = "1";
+
+        $this->userMock->shouldReceive('destroy')->andReturn(1);
+
+        $this->assertEquals(1, $this->userMock->destroy(1));
     }
 }
