@@ -66,11 +66,11 @@ abstract class Base
 
             return $object;
         }
-        catch(PDOException $e) {
-            return $e->getMessage();
+        catch(PDOException $pe) {
+            return $pe->getMessage();
         }
-        catch(Exception $e2) {
-            return $e2->getMessage();
+        catch(Exception $e) {
+            return $e->getMessage();
         }
     }
 
@@ -87,11 +87,11 @@ abstract class Base
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
-        catch(PDOException $e) {
-            return $e->getMessage();
+        catch(PDOException $pe) {
+            return $pe->getMessage();
         }
-        catch(Exception $e2) {
-            return $e2->getMessage();
+        catch(Exception $e) {
+            return $e->getMessage();
         }
     }
 
@@ -120,11 +120,11 @@ abstract class Base
 
             return $affectedRows;
         }
-        catch(PDOException $e) {
-            return $e->getMessage();
+        catch(PDOException $pe) {
+            return $pe->getMessage();
         }
-        catch(Exception $e2) {
-            return $e2->getMessage();
+        catch(Exception $e) {
+            return $e->getMessage();
         }
     }
 
@@ -178,11 +178,11 @@ abstract class Base
 
             return $affectedRows;
         }
-        catch(PDOException $e) {
-            return $e->getMessage();
+        catch(PDOException $pe) {
+            return $pe->getMessage();
         }
-        catch(Exception $e2) {
-            return $e2->getMessage();
+        catch(Exception $e) {
+            return $e->getMessage();
         }
     }
 }

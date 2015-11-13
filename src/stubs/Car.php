@@ -1,6 +1,6 @@
 <?php
 
-namespace Wilson\Source\Examples;
+namespace Wilson\Source\Stubs;
 
 use Wilson\Source\Base;
 

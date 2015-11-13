@@ -5,10 +5,22 @@ namespace Wilson\tests;
 use Mockery;
 use Wilson\Source\Base;
 use PHPUnit_Framework_TestCase;
-use Wilson\Source\Examples\User;
+use Wilson\Source\Stubs\User;
 
 class BaseTest extends PHPUnit_Framework_TestCase
 {
+    public $userMock;
+
+    public function setUp()
+    {
+        $this->userMock = Mockery::mock('Wilson\Source\Stubs\User');
+    }
+
+    public function tearDown()
+    {
+        Mockery::close();
+    }
+
     /**
      * Test that the right table name can be constructed from the class name
      */
@@ -24,8 +36,7 @@ class BaseTest extends PHPUnit_Framework_TestCase
      */
     public function testFind()
     {
-        $mock = Mockery::mock('Wilson\Source\Examples\User');
-        $mock->shouldReceive('find')->with(1)->andReturn(new static);
+        $this->userMock->shouldReceive('find')->with(1)->andReturn(new static);
     }
 
     /**
@@ -33,8 +44,7 @@ class BaseTest extends PHPUnit_Framework_TestCase
      */
     public function testSave()
     {
-        $mock = Mockery::mock('Wilson\Source\Examples\User');
-        $mock->shouldReceive('save')->once()->andReturn('1');
+        $this->userMock->shouldReceive('save')->andReturn('1');
     }
 
     /**
@@ -57,7 +67,6 @@ class BaseTest extends PHPUnit_Framework_TestCase
      */
     public function testDestroy()
     {
-        $mock = Mockery::mock('Wilson\Source\Examples\User');
-        $mock->shouldReceive('save')->once()->with('1')->andReturn('1');
+        $this->userMock->shouldReceive('save')->with('1')->andReturn('1');
     }
 }
