@@ -15,7 +15,7 @@ class Connection
   {
     try
     {
-      $dotenv = new Dotenv(__DIR__ . '/../');
+      $dotenv = new Dotenv($_SERVER['DOCUMENT_ROOT']);
       $dotenv->load();
 
       $host = getenv('DB_HOST');
