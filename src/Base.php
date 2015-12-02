@@ -109,7 +109,7 @@ abstract class Base
             else {
                 //insert a new record
                 $tableColumns = implode(", ", array_keys(self::$fields));
-                $columnValues = "'".implode("',' ", array_values(self::$fields))."'";
+                $columnValues = "'".implode("', '", array_values(self::$fields))."'";
                 $sql = "INSERT INTO ".$tableName."($tableColumns) VALUES($columnValues)";
             }
 
