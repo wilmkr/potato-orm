@@ -26,8 +26,9 @@ class Connection
       $db = getenv('DB_NAME');
       $username = getenv('DB_USERNAME');
       $password = getenv('DB_PASSWORD');
+      $driver = getenv('DB_DRIVER');
 
-      return new PDO('mysql:host='.$host.';dbname='.$db.';charset=utf8', $username, $password);
+      return new PDO($driver.':host='.$host.';dbname='.$db.';charset=utf8', $username, $password);
     }
     catch (PDOException $e)
     {
