@@ -15,29 +15,26 @@ class Connection
   {
     try
     {
-      if (! getenv('APP_ENV') || getenv('APP_ENV')=="local") {
-        // load config values from .env file if APP_ENV is not found.
-        // APP_ENV is set on Heroku server
-        $dotenv = new Dotenv($_SERVER['DOCUMENT_ROOT']);
-        $dotenv->load();
-      }
+        /**
+         * Check if the APP_ENV variable is set. If not found or it has a value of 'local'
+         * then load variable values from app's .env file. Else load server server environment variables.
+         */
+        if (! getenv('APP_ENV') || getenv('APP_ENV')=="local") {
+            $dotenv = new Dotenv($_SERVER['DOCUMENT_ROOT']);
+            $dotenv->load();
+        }
 
-      $host = getenv('DB_HOST');
-      $db = getenv('DB_NAME');
-      $username = getenv('DB_USERNAME');
-      $password = getenv('DB_PASSWORD');
-      $driver = getenv('DB_DRIVER');
+        $host = getenv('DB_HOST');
+        $db = getenv('DB_NAME');
+        $username = getenv('DB_USERNAME');
+        $password = getenv('DB_PASSWORD');
+        $driver = getenv('DB_DRIVER');
 
-      if($driver == 'mysql') {
-        return new PDO($driver.':host='.$host.';dbname='.$db.';charset=utf8', $username, $password);
-      }
-      else if($driver == 'pgsql') {
         return new PDO($driver.':host='.$host.';dbname='.$db, $username, $password);
-      }
     }
     catch (PDOException $e)
     {
-      return $e->getMessage();
+        return $e->getMessage();
     }
   }
 }
