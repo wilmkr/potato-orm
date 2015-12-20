@@ -28,7 +28,12 @@ class Connection
       $password = getenv('DB_PASSWORD');
       $driver = getenv('DB_DRIVER');
 
-      return new PDO($driver.':host='.$host.';dbname='.$db.';charset=utf8', $username, $password);
+      if($driver == 'mysql') {
+        return new PDO($driver.':host='.$host.';dbname='.$db.';charset=utf8', $username, $password);
+      }
+      else if($driver == 'pgsql') {
+        return new PDO($driver.':host='.$host.';dbname='.$db, $username, $password);
+      }
     }
     catch (PDOException $e)
     {
