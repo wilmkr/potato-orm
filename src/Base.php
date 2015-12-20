@@ -166,6 +166,11 @@ abstract class Base
     public static function destroy($position)
     {
         $record = self::find($position);
+
+        if(is_string($record)) {
+            return $record;
+        }
+
         $id = $record->id;
 
         try {
