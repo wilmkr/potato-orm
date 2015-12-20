@@ -50,10 +50,13 @@ abstract class Base
             $tableName = self::getTableName();
             $conn = self::getConnection();
 
-            $stmt = $conn->query('SELECT * FROM '.$tableName.' LIMIT '.$offset.', 1');
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt = $conn->query('SELECT * FROM '.$tableName.' LIMIT '.$offset.', 1'); //mysql syntax
+            if(! $stmt) {
+                $stmt = $conn->query('SELECT * FROM '.$tableName.' OFFSET '.$offset.' LIMIT 1'); //pgsql syntax
+            }
 
-            if(!$result) {
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if(! $result) {
                 throw new Exception(" No record exists at position $position in the $tableName table.");
             }
 
