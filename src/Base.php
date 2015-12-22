@@ -43,7 +43,7 @@ abstract class Base
      * Finds a record in the database table in the position denoted by the parameter passed
      * @param  integer $position
      */
-    public static function find($position)
+    public static function findByPosition($position)
     {
         try {
             $offset = $position - 1;
@@ -55,6 +55,45 @@ abstract class Base
                 $stmt = $conn->query('SELECT * FROM '.$tableName.' OFFSET '.$offset.' LIMIT 1'); //pgsql syntax
             }
 
+            return self::find($stmt);;
+        }
+        catch(PDOException $pe) {
+            return $pe->getMessage();
+        }
+        catch(Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+     /**
+     * Finds a record in the database table that has the id passed in as a parameter
+     * @param  integer $id
+     */
+    public static function findById($id)
+    {
+        try {
+            $tableName = self::getTableName();
+            $conn = self::getConnection();
+
+            $stmt = $conn->query('SELECT * FROM '.$tableName.' WHERE id='.$id);
+
+            return self::find($stmt);
+        }
+        catch(PDOException $pe) {
+            return $pe->getMessage();
+        }
+        catch(Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Finds a record in the database using the statement object passed in
+     * @param  PDO statement $stmt
+     */
+    public static function find($stmt)
+    {
+         try {
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if(! $result) {
                 throw new Exception(" No record exists at position $position in the $tableName table.");
@@ -160,13 +199,33 @@ abstract class Base
     }
 
     /**
-     * This method deletes a record from the database table at the position denoted by the parameter passed in
+     * This method is used to delete a record from the database based on the record's position in the table
+     * @param $position
+     */
+    public static function destroyByPosition($position)
+    {
+        $record = self::findByPosition($position);
+
+        return self::destroy($record);
+    }
+
+    /**
+     *  This method is used to delete a record from the database using the record's id
+     * @param  $id
+     */
+    public static function destroyById($id)
+    {
+        $record = self::findById($id);
+
+        return self::destroy($record);
+    }
+
+    /**
+     * This method deletes a record from the database table
      * @param  integer $position
      */
-    public static function destroy($position)
+    public static function destroy($record)
     {
-        $record = self::find($position);
-
         if(is_string($record)) {
             return $record;
         }
