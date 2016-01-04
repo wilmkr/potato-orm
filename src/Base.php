@@ -96,7 +96,7 @@ abstract class Base
          try {
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if(! $result) {
-                throw new Exception(" No record exists at position $position in the $tableName table.");
+                throw new Exception(" Record not found.");
             }
 
             $object = new static;
